@@ -82,23 +82,14 @@ namespace Mirror
         {
             get
             {
-                // if we are in host mode,  the list of spawned object is the same as the server list
-                if (IsLocalClient)
-                    return hostServer.Spawned;
-                else
-                    return spawned;
+                return spawned;
             }
         }
 
         /// <summary>
-        /// The host server
-        /// </summary>
-        internal NetworkServer hostServer;
-
-        /// <summary>
         /// NetworkClient can connect to local server in host mode too
         /// </summary>
-        public bool IsLocalClient => hostServer != null;
+        public bool IsLocalClient;
 
         /// <summary>
         /// Connect client to a NetworkServer instance.
@@ -183,7 +174,7 @@ namespace Mirror
             (IConnection c1, IConnection c2) = PipeConnection.CreatePipe();
 
             server.SetLocalConnection(this, c2);
-            hostServer = server;
+            IsLocalClient = true;
             Connection = GetNewConnection(c1);
             RegisterHostHandlers();
 
@@ -301,7 +292,7 @@ namespace Mirror
         {
             logger.Log("Shutting down client.");
 
-            hostServer = null;
+            IsLocalClient = false;
 
             connectState = ConnectState.Disconnected;
 
