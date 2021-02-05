@@ -44,6 +44,7 @@ namespace Mirror
         uint nextNetworkId = 1;
         uint GetNextNetworkId() => nextNetworkId++;
 
+        public List<NetworkIdentity> SceneObjects = new List<NetworkIdentity>();
 
         public readonly HashSet<NetworkIdentity> DirtyObjects = new HashSet<NetworkIdentity>();
         private readonly List<NetworkIdentity> DirtyObjectsTmp = new List<NetworkIdentity>();
@@ -114,6 +115,9 @@ namespace Mirror
 
         void OnServerSceneChanged(string scenePath, SceneOperation sceneOperation)
         {
+            if (sceneOperation == SceneOperation.Normal)
+                SceneObjects = NetworkSceneManager.NetworkScenes[0].SceneObjects;
+
             SpawnOrActivate();
         }
 
